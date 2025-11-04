@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MiCVLibre · Crea, diseña y descarga tu CV gratis en minutos." />
+  <title>MiCVLibre — Tu currículum, sin límites ni costos</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;        /* gris claro elegante */
+      --ink:#2b2b2b;       /* texto */
+      --muted:#6c6c6c;     /* texto secundario */
+      --card:#ffffff;      /* tarjetas */
+      --accent:#0a84ff;    /* acento celeste profesional */
+      --accent-ink:#ffffff;
+      --line:#e6e6e9;
+      --radius:16px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Inter, Arial, sans-serif}
+    a{color:var(--accent);text-decoration:none}
+
+    /* Header */
+    header.hero{position:relative;padding:64px 24px 32px;background:linear-gradient(180deg,#2b2b2b 0%, #3a3a3a 100%);color:#fff;text-align:center}
+    header .brand{font-weight:800;letter-spacing:.5px;font-size:34px;margin:0}
+    header p{margin:8px auto 24px;max-width:720px;color:#e9e9e9}
+    .cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;border:1px solid transparent;cursor:pointer;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:.2s}
+    .btn.primary{background:var(--accent);color:var(--accent-ink)}
+    .btn.ghost{background:transparent;color:#fff;border-color:#5a5a5a}
+    .btn:hover{transform:translateY(-1px)}
+
+    /* Nav */
+    nav.top{position:sticky;top:0;z-index:50;background:#2b2b2b44;backdrop-filter: blur(8px)}
+    nav .bar{max-width:1180px;margin:auto;display:flex;gap:14px;padding:10px 16px;justify-content:center}
+    nav a{color:#fff;padding:8px 14px;border-radius:999px}
+    nav a:hover{background:#ffffff22}
+
+    /* Sections */
+    section{max-width:1180px;margin:32px auto;padding:0 16px}
+
+    /* Grid for builder */
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr;}}
+
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card h2{margin:0;padding:18px 20px;border-bottom:1px solid var(--line);font-size:20px}
+    .card .body{padding:18px 20px}
+
+    /* Form styling */
+    label{display:block;font-weight:600;margin:14px 0 6px}
+    input[type=text], input[type=email], textarea{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:12px;background:#fafafa}
+    textarea{min-height:96px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:640px){.row{grid-template-columns:1fr}}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fbfbfb;margin:4px 6px 0 0;font-size:13px}
+    .chip button{border:0;background:transparent;cursor:pointer;color:#888}
+
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+
+    /* Preview CV */
+    .preview-wrap{padding:16px}
+    .cv{--pad:26px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);width:100%;aspect-ratio: 1/1.414; /* A4 */ overflow:hidden;position:relative}
+    .cv-inner{padding:var(--pad)}
+    .cv header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #ececec;padding-bottom:12px}
+    .cv h1{margin:0;font-size:28px;line-height:1.2}
+    .cv .role{color:var(--muted);font-weight:600}
+    .cv .meta{margin-top:10px;font-size:13px;color:#555}
+    .cv .sec{margin-top:18px}
+    .cv .sec h3{margin:0 0 6px;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:#444}
+    .cv ul{margin:8px 0 0 18px;padding:0}
+    .cv li{margin:4px 0}
+    .tag{display:inline-block;border:1px solid #e5e5e9;border-radius:999px;padding:4px 10px;margin:4px 6px 0 0;font-size:12px}
+
+    /* Template: modern accent bar */
+    .cv.modern::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent)}
+
+    /* Template switcher */
+    .templater{display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Footer */
+    footer{margin:48px 0 24px;text-align:center;color:#7a7a7a}
+
+    /* Print to PDF */
+    @media print{
+      body{background:#fff}
+      header.hero, nav.top, .card:not(.printable), footer{display:none !important}
+      section{margin:0;padding:0}
+      .cv{border:0;box-shadow:none;width:210mm;aspect-ratio:auto}
+      .cv-inner{padding:18mm}
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <header class="hero" id="inicio">
+    <h1 class="brand">MiCVLibre</h1>
+    <p>Diseña y descarga tu CV profesional en minutos. 100% gratuito, accesible y pensado para jóvenes con propósito.</p>
+    <div class="cta">
+      <a class="btn primary" href="#creador">Empieza ahora</a>
+      <a class="btn ghost" href="#plantillas">Ver plantillas</a>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="top">
+    <div class="bar">
+      <a href="#inicio">Inicio</a>
+      <a href="#creador">Creador de CV</a>
+      <a href="#plantillas">Plantillas</a>
+      <a href="#consejos">Consejos</a>
+      <a href="#sobre">Sobre MiCVLibre</a>
+    </div>
+  </nav>
+
+  <!-- BUILDER -->
+  <section id="creador">
+    <div class="grid">
+      <!-- Form -->
+      <div class="card printable">
+        <h2>Completa tus datos</h2>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>Nombre completo</label>
+              <input id="i_name" type="text" placeholder="Ej. Shafurs García Giraldo" />
+            </div>
+            <div>
+              <label>Rol / Especialidad</label>
+              <input id="i_role" type="text" placeholder="Ej. Líder consejero de empleabilidad" />
+            </div>
+          </div>
+
+          <label>Perfil profesional</label>
+          <textarea id="i_summary" placeholder="Escribe 3-4 líneas sobre tu propuesta de valor"></textarea>
+
+          <div class="row">
+            <div>
+              <label>Ciudad · País</label>
+              <input id="i_location" type="text" placeholder="Lima, Perú" />
+            </div>
+            <div>
+              <label>Email</label>
+              <input id="i_email" type="email" placeholder="correo@ejemplo.com" />
+            </div>
+          </div>
+
+          <label>Educación (formato: Título — Institución — Fechas)</label>
+          <textarea id="i_edu" placeholder="Ing. de Minas — UPN — 2021–presente"></textarea>
+
+          <label>Experiencia (una línea por logro / puesto)</label>
+          <textarea id="i_exp" placeholder="Líder Consejero — EEL UPN — 2025 · Implementé talleres de CV para 40+ estudiantes"></textarea>
+
+          <label>Habilidades (separadas por coma)</label>
+          <input id="i_skills" type="text" placeholder="Comunicación, Excel, Liderazgo, Investigación" />
+
+          <div class="actions">
+            <button class="btn primary" id="btnPreview">Actualizar vista previa</button>
+            <button class="btn" id="btnSave">Guardar (local)</button>
+            <button class="btn" id="btnLoad">Cargar</button>
+            <button class="btn" id="btnPrint">Imprimir / PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="card">
+        <h2>Vista previa (elige plantilla)</h2>
+        <div class="body">
+          <div class="templater">
+            <button class="btn" data-template="classic">Clásico</button>
+            <button class="btn" data-template="modern">Moderno</button>
+          </div>
+          <div class="preview-wrap">
+            <article id="cv" class="cv modern">
+              <div class="cv-inner">
+                <header>
+                  <div>
+                    <h1 id="p_name">Nombre Apellido</h1>
+                    <div class="role" id="p_role">Rol / Especialidad</div>
+                  </div>
+                  <div class="meta" id="p_meta">Lima, Perú · correo@ejemplo.com</div>
+                </header>
+
+                <section class="sec">
+                  <h3>Perfil</h3>
+                  <div id="p_summary">Resumen profesional breve con enfoque en logros, impacto y propósito.</div>
+                </section>
+
+                <section class="sec">
+                  <h3>Experiencia</h3>
+                  <ul id="p_exp">
+                    <li>Ejemplo: Implementé un programa de empleabilidad para 40+ estudiantes.</li>
+                  </ul>
+                </section>
+
+                <section class="sec">
+                  <h3>Educación</h3>
+                  <ul id="p_edu">
+                    <li>Ing. de Minas — UPN — 2021–presente</li>
+                  </ul>
+                </section>
+
+                <section class="sec">
+                  <h3>Habilidades</h3>
+                  <div id="p_skills">
+                    <span class="tag">Comunicación</span>
+                    <span class="tag">Excel</span>
+                    <span class="tag">Liderazgo</span>
+                  </div>
+                </section>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMPLATES LIST (downloadables placeholder) -->
+  <section id="plantillas">
+    <div class="card">
+      <h2>Plantillas descargables</h2>
+      <div class="body">
+        <p>Puedes usar la vista previa para exportar tu CV como PDF. Próximamente añadiremos archivos <code>.docx</code> y <code>.pdf</code> listos para descargar aquí.</p>
+        <ul>
+          <li>CV Clásico · limpio, jerárquico.</li>
+          <li>CV Moderno · barra de acento y tipografía fuerte.</li>
+          <li>CV Universitario · pensado para prácticas.</li>
+          <li>CV Profesional · senior con logros cuantificados.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="consejos">
+    <div class="card">
+      <h2>Consejos de empleabilidad</h2>
+      <div class="body">
+        <ul>
+          <li><strong>Perfil con impacto:</strong> 3–4 líneas con tu propuesta de valor y un logro cuantificado.</li>
+          <li><strong>Logros > tareas:</strong> usa verbos de acción y métricas (%, #, tiempo, S/.)</li>
+          <li><strong>Ordena por relevancia:</strong> lo más relevante arriba; evita bloques largos.</li>
+          <li><strong>Formato</strong>: 1 página si tienes &lt;5 años de experiencia; tipografía legible.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="sobre">
+    <div class="card">
+      <h2>Sobre MiCVLibre</h2>
+      <div class="body">
+        <p><strong>MiCVLibre</strong> es una iniciativa creada por <strong>Shafurs García Giraldo</strong>, Líder Consejero de Empleabilidad en la EEL – UPN, para democratizar la creación de CVs profesionales sin costo.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2025 MiCVLibre · Construido con GitHub Pages</footer>
+
+  <script>
+    // Helpers
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    function textToList(value){
+      return value.split(/
++/).map(v=>v.trim()).filter(Boolean);
+    }
+
+    function skillsToTags(value){
+      return value.split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${s}</span>`).join('');
+    }
+
+    function refreshPreview(){
+      const name = $('#i_name').value || 'Nombre Apellido';
+      const role = $('#i_role').value || 'Rol / Especialidad';
+      const summary = $('#i_summary').value || 'Resumen profesional breve con enfoque en logros, impacto y propósito.';
+      const location = $('#i_location').value || 'Lima, Perú';
+      const email = $('#i_email').value || 'correo@ejemplo.com';
+      const eduItems = textToList($('#i_edu').value);
+      const expItems = textToList($('#i_exp').value);
+      const skills = skillsToTags($('#i_skills').value || 'Comunicación, Excel, Liderazgo');
+
+      $('#p_name').textContent = name;
+      $('#p_role').textContent = role;
+      $('#p_summary').textContent = summary;
+      $('#p_meta').textContent = `${location} · ${email}`;
+
+      $('#p_edu').innerHTML = (eduItems.length ? eduItems : ['Ing. de Minas — UPN — 2021–presente']).map(i=>`<li>${i}</li>`).join('');
+      $('#p_exp').innerHTML = (expItems.length ? expItems : ['Ejemplo: Implementé un programa de empleabilidad para 40+ estudiantes.']).map(i=>`<li>${i}</li>`).join('');
+      $('#p_skills').innerHTML = skills;
+    }
+
+    // Template switcher
+    $$('#plantillas .btn, .templater .btn').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const t = e.currentTarget.dataset.template;
+        if(!t) return;
+        const cv = $('#cv');
+        cv.classList.remove('classic','modern');
+        cv.classList.add(t);
+      })
+    })
+
+    // Actions
+    $('#btnPreview').addEventListener('click', refreshPreview);
+    $('#btnPrint').addEventListener('click', ()=>{ window.print(); });
+    $('#btnSave').addEventListener('click', ()=>{
+      const data = {
+        name: $('#i_name').value,
+        role: $('#i_role').value,
+        summary: $('#i_summary').value,
+        location: $('#i_location').value,
+        email: $('#i_email').value,
+        edu: $('#i_edu').value,
+        exp: $('#i_exp').value,
+        skills: $('#i_skills').value
+      };
+      localStorage.setItem('micvlibre_data', JSON.stringify(data));
+      alert('Datos guardados localmente.');
+    });
+    $('#btnLoad').addEventListener('click', ()=>{
+      const raw = localStorage.getItem('micvlibre_data');
+      if(!raw){ alert('No hay datos guardados.'); return; }
+      const d = JSON.parse(raw);
+      $('#i_name').value = d.name || '';
+      $('#i_role').value = d.role || '';
+      $('#i_summary').value = d.summary || '';
+      $('#i_location').value = d.location || '';
+      $('#i_email').value = d.email || '';
+      $('#i_edu').value = d.edu || '';
+      $('#i_exp').value = d.exp || '';
+      $('#i_skills').value = d.skills || '';
+      refreshPreview();
+    });
+
+    // Initial
+    refreshPreview();
+  </script>
+</body>
+</html>
